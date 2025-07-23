@@ -10,12 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      xvfb:
-        image: selenium/standalone-chrome:latest
-        options: >-
-          --shm-size=2g
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,32 +24,4 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven
-
-      - name: Set up Chrome
-        uses: browser-actions/setup-chrome@v1
-
-      - name: Build and run tests with Allure results
-        run: |
-          sudo apt-get install -y xvfb
-          Xvfb :99 & export DISPLAY=:99
-          mvn clean test -Dsurefire.suiteXmlFiles=testng.xml
-        env:
-          DISPLAY: :99
-
-      - name: Generate Allure Report
-        run: |
-          mvn io.qameta.allure:allure-maven:report
-
-      - name: Upload Allure results
-        uses: actions/upload-artifact@v3
-        with:
-          name: allure-results
-          path: target/allure-results
-
-      - name: Upload Allure report
-        uses: actions/upload-artifact@v3
-        with:
-          name: allure-report
-          path: target/site/allure-maven-plugin
+          key: ${{ runner.os }}-maven-${{ hashFiles('
